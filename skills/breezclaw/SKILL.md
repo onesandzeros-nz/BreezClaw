@@ -1,5 +1,6 @@
 ---
-name: breezclaw
+slug: breezclaw
+name: BreezClaw
 description: "Self-custodial Bitcoin and Lightning wallet for AI agents. Send and receive sats via Lightning Network, Spark, or on-chain Bitcoin. Use when: checking bitcoin balance, sending/receiving payments, generating Lightning invoices, managing wallet operations. Requires the BreezClaw plugin and a Breez API key."
 version: 1.0.0
 author: onesandzeros-nz
