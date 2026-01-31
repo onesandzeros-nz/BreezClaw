@@ -369,3 +369,4 @@ export function register(api: PluginApi) {
 
 // Alias for OpenClaw compatibility
 export const activate = register;
+export default register;
