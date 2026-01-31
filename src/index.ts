@@ -55,7 +55,7 @@ function errorResult(error: unknown): ToolResult {
   };
 }
 
-export default function register(api: PluginApi) {
+export function register(api: PluginApi) {
   // Initialize API key from config if provided
   if (api.config.breezApiKey) {
     wallet.setApiKey(api.config.breezApiKey);
@@ -366,3 +366,6 @@ export default function register(api: PluginApi) {
     }
   });
 }
+
+// Alias for OpenClaw compatibility
+export const activate = register;
