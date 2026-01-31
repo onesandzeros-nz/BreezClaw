@@ -2,38 +2,37 @@
 name: breezclaw
 description: "Self-custodial Bitcoin and Lightning wallet for AI agents. Send and receive sats via Lightning Network, Spark, or on-chain Bitcoin. Use when: checking bitcoin balance, sending/receiving payments, generating Lightning invoices, managing wallet operations. Requires the BreezClaw plugin and a Breez API key."
 version: 1.0.0
-author: OpenClaw
+author: onesandzeros-nz
 keywords: bitcoin, lightning, wallet, breez, spark, sats, payments, self-custodial, breezclaw
+homepage: https://github.com/onesandzeros-nz/BreezClaw
 ---
 
 # BreezClaw
 
-Self-custodial Bitcoin and Lightning wallet powered by Breez SDK Spark.
+Self-custodial Bitcoin and Lightning wallet for AI agents. Powered by Breez SDK Spark.
 
-## Setup
-
-### 1. Install the Plugin
+## Install
 
 ```bash
-# Clone the plugin repository
+# Clone plugin
 cd ~/.openclaw/extensions
-git clone https://github.com/onesandzeros-nz/BreezClaw.git bitcoin-wallet
+git clone https://github.com/onesandzeros-nz/BreezClaw.git breezclaw
 
 # Install dependencies and build
-cd bitcoin-wallet
+cd breezclaw
 npm install
 npm run build
 ```
 
-### 2. Get a Breez API Key
+## Configure
 
-1. Go to https://breez.technology/sdk/
-2. Sign up for API access
-3. Copy your API key
+### 1. Get Breez API Key
 
-### 3. Configure OpenClaw
+Sign up at https://breez.technology/sdk/
 
-Add to `~/.openclaw/openclaw.json`:
+### 2. Add to OpenClaw Config
+
+Edit `~/.openclaw/openclaw.json`:
 
 ```json
 {
@@ -51,7 +50,7 @@ Add to `~/.openclaw/openclaw.json`:
 }
 ```
 
-### 4. Restart Gateway
+### 3. Restart
 
 ```bash
 openclaw gateway restart
@@ -61,59 +60,44 @@ openclaw gateway restart
 
 | Tool | Description |
 |------|-------------|
-| `wallet_status` | Check if wallet exists and connection state |
+| `wallet_status` | Check wallet exists and connection state |
 | `wallet_connect` | Connect or create wallet from mnemonic |
 | `wallet_balance` | Get balance in sats and BTC |
-| `wallet_receive` | Generate payment request (Spark/Lightning/Bitcoin) |
+| `wallet_receive` | Generate payment request |
 | `wallet_prepare_send` | Prepare payment with fee estimate |
 | `wallet_send` | Execute confirmed payment |
 | `wallet_transactions` | List transaction history |
-| `wallet_info` | Detailed wallet information |
+| `wallet_info` | Detailed wallet info |
 | `wallet_backup` | Retrieve mnemonic (sensitive!) |
 | `wallet_disconnect` | Clean disconnect |
 
 ## Receive Methods
 
-| Method | Description | Use Case |
-|--------|-------------|----------|
-| `spark` | Reusable Spark address | Default, any amount |
-| `spark_invoice` | Spark invoice | Specific amount |
-| `lightning` | BOLT11 invoice | Standard Lightning |
-| `bitcoin` | On-chain address | Larger amounts |
+- `spark` — Reusable Spark address (default)
+- `spark_invoice` — Spark invoice with amount
+- `lightning` — BOLT11 invoice
+- `bitcoin` — On-chain address
 
 ## Payment Flow
 
-**Always use two-step send:**
+**Always two-step:**
 
-1. `wallet_prepare_send` → Show fees to user
-2. User confirms → `wallet_send` with `confirmed: true`
+1. `wallet_prepare_send` → Show fees
+2. User confirms → `wallet_send(confirmed=true)`
 
 ## Security
 
-- Never expose mnemonics unless explicitly requested
+- Never expose mnemonic unless explicitly requested
 - Always show fees before sending
-- Require explicit user confirmation for sends
-- Wallet data stored in `~/.openclaw/breezclaw/`
+- Require explicit confirmation for sends
+- Wallet data: `~/.openclaw/breezclaw/`
 
 ## Examples
 
-**Check balance:**
 ```
-"What's my Bitcoin balance?"
-→ wallet_balance
-```
+"What's my balance?" → wallet_balance
 
-**Receive Lightning:**
-```
-"Generate invoice for 1000 sats"
-→ wallet_receive(method="lightning", amount_sats=1000)
-```
+"Invoice for 1000 sats" → wallet_receive(method="lightning", amount_sats=1000)
 
-**Send to Lightning address:**
+"Send 500 sats to user@wallet.com" → resolve LNURL → wallet_prepare_send → confirm → wallet_send
 ```
-"Send 500 sats to user@wallet.com"
-→ Resolve LNURL → wallet_prepare_send → confirm → wallet_send
-```
-
-**QR codes:**
-Generate with `qrcode` npm package for invoices.
