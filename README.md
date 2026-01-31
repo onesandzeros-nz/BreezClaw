@@ -18,9 +18,9 @@ Self-custodial Bitcoin and Lightning wallet plugin for OpenClaw, powered by [Bre
 
 ## Installation
 
-1. **Clone or copy the plugin:**
+1. **Clone the plugin:**
    ```bash
-   cp -r openclaw-plugin ~/.openclaw/extensions/bitcoin-wallet
+   git clone https://github.com/onesandzeros-nz/BreezClaw.git ~/.openclaw/extensions/bitcoin-wallet
    ```
 
 2. **Install dependencies:**
