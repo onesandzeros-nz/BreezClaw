@@ -1,0 +1,24 @@
+{
+  "id": "bitcoin-wallet",
+  "name": "Bitcoin Wallet",
+  "description": "Self-custodial Bitcoin and Lightning wallet powered by Breez SDK Spark",
+  "version": "1.0.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "breezApiKey": {
+        "type": "string",
+        "description": "Breez API key (get from https://breez.technology/sdk/)"
+      },
+      "network": {
+        "type": "string",
+        "enum": ["mainnet", "testnet"],
+        "default": "mainnet",
+        "description": "Bitcoin network to use"
+      }
+    },
+    "required": ["breezApiKey"]
+  },
+  "skills": ["skills/bitcoin-wallet"]
+}
