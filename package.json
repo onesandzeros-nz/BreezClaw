@@ -27,6 +27,6 @@
     "breez"
   ],
   "openclaw": {
-    "extensions": ["openclaw.plugin.json"]
+    "extensions": ["./dist/index.js"]
   }
 }
