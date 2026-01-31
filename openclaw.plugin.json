@@ -1,6 +1,6 @@
 {
-  "id": "bitcoin-wallet",
-  "name": "Bitcoin Wallet",
+  "id": "breezclaw",
+  "name": "BreezClaw",
   "description": "Self-custodial Bitcoin and Lightning wallet powered by Breez SDK Spark",
   "version": "1.0.0",
   "entry": "./dist/index.js",

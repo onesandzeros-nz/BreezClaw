@@ -1,8 +1,8 @@
 {
-  "name": "@openclaw/bitcoin-wallet",
+  "name": "@openclaw/breezclaw",
   "version": "1.0.0",
   "description": "Bitcoin and Lightning wallet plugin for OpenClaw using Breez SDK Spark",
-    "main": "dist/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@breeztech/breez-sdk-spark": "^0.7.14",
-    "@sinclair/typebox": "^0.32.0"
+    "@sinclair/typebox": "^0.32.0",
+    "bip39": "^3.1.0",
+    "qrcode": "^1.5.4"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
@@ -24,7 +26,8 @@
     "bitcoin",
     "lightning",
     "wallet",
-    "breez"
+    "breez",
+    "breezclaw"
   ],
   "openclaw": {
     "extensions": ["./dist/index.js"]

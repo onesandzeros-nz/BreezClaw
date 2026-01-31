@@ -57,8 +57,9 @@ function errorResult(error: unknown): ToolResult {
 
 export function register(api: PluginApi) {
   // Initialize API key from config if provided
-  if (api.config.breezApiKey) {
-    wallet.setApiKey(api.config.breezApiKey);
+  const pluginConfig = (api as any).pluginConfig || api.config;
+  if (pluginConfig?.breezApiKey) {
+    wallet.setApiKey(pluginConfig.breezApiKey);
   }
 
   // Register background service for cleanup
