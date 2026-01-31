@@ -26,5 +26,6 @@
     "lightning",
     "wallet",
     "breez"
-  ]
+  ],
+  "openclaw.extensions": ["openclaw.plugin.json"]
 }
