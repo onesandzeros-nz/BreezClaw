@@ -1,0 +1,28 @@
+{
+  "browser": "index.js",
+  "dependencies": {},
+  "exports": {
+    ".": {
+      "default": "./index.js",
+      "import": "./index.js"
+    },
+    "./storage": {
+      "default": "./storage/index.js",
+      "import": "./storage/index.js"
+    }
+  },
+  "files": [
+    "breez_sdk_spark_wasm_bg.wasm",
+    "breez_sdk_spark_wasm.js",
+    "breez_sdk_spark_wasm.d.ts",
+    "storage/",
+    "index.js"
+  ],
+  "main": "index.js",
+  "module": "index.js",
+  "name": "breez-sdk-spark-wasm",
+  "sideEffects": false,
+  "type": "module",
+  "types": "index.d.ts",
+  "version": "0.1.0"
+}

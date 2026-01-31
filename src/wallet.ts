@@ -17,7 +17,7 @@ import {
   ReceivePaymentMethod
 } from '@breeztech/breez-sdk-spark/nodejs';
 import * as path from 'path';
-import { saveWalletData, loadWalletData, walletExists, getWalletDir, deleteWalletData } from './storage.js';
+import { saveWalletData, loadWalletData, walletExists, getWalletDir, deleteWalletData } from './storage';
 
 let sdk: BreezSdk | null = null;
 let currentApiKey: string | null = null;

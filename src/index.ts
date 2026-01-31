@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import * as wallet from './wallet.js';
+import * as wallet from './wallet';
 
 // OpenClaw plugin API types
 interface PluginApi {
