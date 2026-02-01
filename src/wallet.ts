@@ -167,11 +167,93 @@ export async function receivePayment(
   return await wallet.receivePayment(request);
 }
 
+// Check if a string looks like a Lightning address (user@domain)
+function isLightningAddress(input: string): boolean {
+  const lightningAddressRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return lightningAddressRegex.test(input) && !input.startsWith('lnbc') && !input.startsWith('lnurl');
+}
+
+// Resolve a Lightning address to a BOLT11 invoice via LNURL-pay
+async function resolveLightningAddress(address: string, amountSats: number): Promise<string> {
+  const [username, domain] = address.split('@');
+  
+  // Step 1: Fetch LNURL-pay metadata
+  const lnurlEndpoint = `https://${domain}/.well-known/lnurlp/${username}`;
+  
+  const metadataResponse = await fetch(lnurlEndpoint);
+  if (!metadataResponse.ok) {
+    throw new Error(`Failed to fetch Lightning address metadata: ${metadataResponse.status} ${metadataResponse.statusText}`);
+  }
+  
+  const metadata = await metadataResponse.json() as {
+    callback: string;
+    minSendable: number;
+    maxSendable: number;
+    tag: string;
+    status?: string;
+    reason?: string;
+  };
+  
+  if (metadata.status === 'ERROR') {
+    throw new Error(`Lightning address error: ${metadata.reason || 'Unknown error'}`);
+  }
+  
+  if (metadata.tag !== 'payRequest') {
+    throw new Error(`Invalid LNURL response: expected payRequest, got ${metadata.tag}`);
+  }
+  
+  // LNURL amounts are in millisatoshis
+  const amountMsats = amountSats * 1000;
+  
+  if (amountMsats < metadata.minSendable) {
+    throw new Error(`Amount too small. Minimum: ${Math.ceil(metadata.minSendable / 1000)} sats`);
+  }
+  
+  if (amountMsats > metadata.maxSendable) {
+    throw new Error(`Amount too large. Maximum: ${Math.floor(metadata.maxSendable / 1000)} sats`);
+  }
+  
+  // Step 2: Request invoice from callback
+  const callbackUrl = new URL(metadata.callback);
+  callbackUrl.searchParams.set('amount', amountMsats.toString());
+  
+  const invoiceResponse = await fetch(callbackUrl.toString());
+  if (!invoiceResponse.ok) {
+    throw new Error(`Failed to get invoice from Lightning address: ${invoiceResponse.status} ${invoiceResponse.statusText}`);
+  }
+  
+  const invoiceData = await invoiceResponse.json() as {
+    pr: string;
+    status?: string;
+    reason?: string;
+  };
+  
+  if (invoiceData.status === 'ERROR') {
+    throw new Error(`Invoice request error: ${invoiceData.reason || 'Unknown error'}`);
+  }
+  
+  if (!invoiceData.pr) {
+    throw new Error('No invoice returned from Lightning address');
+  }
+  
+  return invoiceData.pr;
+}
+
 export async function prepareSend(paymentRequest: string, amountSats?: number): Promise<PrepareSendPaymentResponse> {
   const wallet = ensureConnected();
 
+  let finalPaymentRequest = paymentRequest;
+  
+  // If it's a Lightning address, resolve it to a BOLT11 invoice first
+  if (isLightningAddress(paymentRequest)) {
+    if (amountSats === undefined) {
+      throw new Error('Amount is required when paying to a Lightning address');
+    }
+    finalPaymentRequest = await resolveLightningAddress(paymentRequest, amountSats);
+  }
+
   const request: PrepareSendPaymentRequest = {
-    paymentRequest,
+    paymentRequest: finalPaymentRequest,
     amount: amountSats !== undefined ? BigInt(amountSats) : undefined
   };
 
