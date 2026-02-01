@@ -1,4 +1,4 @@
-# Bitcoin Wallet Plugin for OpenClaw
+# BreezClaw
 
 Self-custodial Bitcoin and Lightning wallet plugin for OpenClaw, powered by [Breez SDK Spark](https://breez.technology/sdk/).
 
@@ -20,19 +20,19 @@ Self-custodial Bitcoin and Lightning wallet plugin for OpenClaw, powered by [Bre
 
 1. **Clone the plugin:**
    ```bash
-   git clone https://github.com/onesandzeros-nz/BreezClaw.git ~/.openclaw/extensions/bitcoin-wallet
+   git clone https://github.com/onesandzeros-nz/BreezClaw.git ~/.openclaw/extensions/BreezClaw
    ```
 
 2. **Install dependencies:**
    ```bash
-   cd ~/.openclaw/extensions/bitcoin-wallet
+   cd ~/.openclaw/extensions/BreezClaw
    npm install
    npm run build
    ```
 
 3. **Install in OpenClaw:**
    ```bash
-   openclaw plugins install ~/.openclaw/extensions/bitcoin-wallet
+   openclaw plugins install ~/.openclaw/extensions/BreezClaw
    ```
 
 4. **Configure the plugin** in `~/.openclaw/openclaw.json`:
@@ -40,7 +40,7 @@ Self-custodial Bitcoin and Lightning wallet plugin for OpenClaw, powered by [Bre
    {
      "plugins": {
        "entries": {
-         "bitcoin-wallet": {
+         "breezclaw": {
            "enabled": true,
            "config": {
              "breezApiKey": "your-breez-api-key"
@@ -58,7 +58,7 @@ Self-custodial Bitcoin and Lightning wallet plugin for OpenClaw, powered by [Bre
 
 5. **Restart the Gateway:**
    ```bash
-   openclaw restart
+   openclaw gateway restart
    ```
 
 ## Usage
