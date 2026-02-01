@@ -366,6 +366,125 @@ export function register(api: PluginApi) {
       }
     }
   });
+
+  // Lightning Address tools
+
+  // wallet_lightning_address_check - Check if username is available
+  api.registerTool({
+    name: 'wallet_lightning_address_check',
+    description: 'Check if a Lightning address username is available.',
+    parameters: Type.Object({
+      username: Type.String({
+        description: 'Username to check (will become username@domain.com)'
+      })
+    }),
+    async execute(_id, params) {
+      try {
+        const username = params.username as string;
+        if (!username) {
+          throw new Error('Username is required');
+        }
+        const available = await wallet.checkLightningAddressAvailable(username);
+        return textResult({
+          username,
+          available,
+          message: available ? `${username} is available!` : `${username} is already taken`
+        });
+      } catch (error) {
+        return errorResult(error);
+      }
+    }
+  });
+
+  // wallet_lightning_address_register - Register a Lightning address
+  api.registerTool({
+    name: 'wallet_lightning_address_register',
+    description: 'Register a Lightning address for receiving payments. Creates a human-readable address like username@domain.com.',
+    parameters: Type.Object({
+      username: Type.String({
+        description: 'Username for the Lightning address'
+      }),
+      description: Type.Optional(Type.String({
+        description: 'Description shown to senders (default: "Pay to username")'
+      }))
+    }),
+    async execute(_id, params) {
+      try {
+        const username = params.username as string;
+        const description = params.description as string | undefined;
+        
+        if (!username) {
+          throw new Error('Username is required');
+        }
+        
+        const result = await wallet.registerLightningAddress(username, description);
+        return textResult({
+          success: true,
+          lightningAddress: result.lightningAddress,
+          username: result.username,
+          lnurl: result.lnurl,
+          message: `Lightning address registered: ${result.lightningAddress}`
+        });
+      } catch (error) {
+        return errorResult(error);
+      }
+    }
+  });
+
+  // wallet_lightning_address_get - Get current Lightning address
+  api.registerTool({
+    name: 'wallet_lightning_address_get',
+    description: 'Get the currently registered Lightning address for this wallet.',
+    parameters: Type.Object({}),
+    async execute(_id, _params) {
+      try {
+        const result = await wallet.getLightningAddress();
+        if (!result) {
+          return textResult({
+            registered: false,
+            message: 'No Lightning address registered. Use wallet_lightning_address_register to create one.'
+          });
+        }
+        return textResult({
+          registered: true,
+          lightningAddress: result.lightningAddress,
+          username: result.username,
+          lnurl: result.lnurl
+        });
+      } catch (error) {
+        return errorResult(error);
+      }
+    }
+  });
+
+  // wallet_lightning_address_delete - Delete Lightning address
+  api.registerTool({
+    name: 'wallet_lightning_address_delete',
+    description: 'Delete the registered Lightning address.',
+    parameters: Type.Object({
+      confirm: Type.Boolean({
+        description: 'Must be true to confirm deletion'
+      })
+    }),
+    async execute(_id, params) {
+      try {
+        const confirm = params.confirm as boolean;
+        if (!confirm) {
+          return textResult({
+            error: 'Confirmation required',
+            message: 'Set confirm: true to delete your Lightning address.'
+          });
+        }
+        await wallet.deleteLightningAddress();
+        return textResult({
+          success: true,
+          message: 'Lightning address deleted'
+        });
+      } catch (error) {
+        return errorResult(error);
+      }
+    }
+  });
 }
 
 // Alias for OpenClaw compatibility

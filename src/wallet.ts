@@ -214,5 +214,48 @@ export function formatPayment(payment: Payment): object {
   };
 }
 
+// Lightning Address functions
+export async function checkLightningAddressAvailable(username: string): Promise<boolean> {
+  const wallet = ensureConnected();
+  return await wallet.checkLightningAddressAvailable({ username });
+}
+
+export async function registerLightningAddress(username: string, description?: string): Promise<{
+  lightningAddress: string;
+  username: string;
+  lnurl: string;
+}> {
+  const wallet = ensureConnected();
+  const result = await wallet.registerLightningAddress({ 
+    username, 
+    description: description ?? `Pay to ${username}`
+  });
+  return {
+    lightningAddress: result.lightningAddress,
+    username: result.username,
+    lnurl: result.lnurl
+  };
+}
+
+export async function getLightningAddress(): Promise<{
+  lightningAddress: string;
+  username: string;
+  lnurl: string;
+} | null> {
+  const wallet = ensureConnected();
+  const result = await wallet.getLightningAddress();
+  if (!result) return null;
+  return {
+    lightningAddress: result.lightningAddress,
+    username: result.username,
+    lnurl: result.lnurl
+  };
+}
+
+export async function deleteLightningAddress(): Promise<void> {
+  const wallet = ensureConnected();
+  await wallet.deleteLightningAddress();
+}
+
 export { deleteWalletData };
 export type { PrepareSendPaymentResponse as PrepareSendResponseType };
